@@ -1,0 +1,59 @@
+
+
+                // Function to open tabs with delay
+                function openTabWithDelay() {
+                    if (viewsAttempted < views) {
+                        try {
+                            // Try to open in new tab
+                            const newWindow = window.open(url, '_blank' + viewsAttempted);
+                            
+                            if (newWindow) {
+                                viewsAttempted++;
+                                countElement.textContent = viewsAttempted;
+                                const progress = (viewsAttempted / views) * 100;
+                                progressBar.style.width = progress + '%';
+                                
+                                // Close the tab after a short delay to avoid too many open tabs
+                                setTimeout(() => {
+                                    try {
+                                        newWindow.close();
+                                    } catch (e) {
+                                        // Tab might not be closable due to browser restrictions
+                                    }
+                                }, 2000);
+                            } else {
+                                errorMessage.style.display = 'block';
+                                errorMessage.textContent = 'Popup blocked after ' + viewsAttempted + ' views. Please allow popups.';
+                                openTabsButton.textContent = 'Start Increasing Views';
+                                openTabsButton.disabled = false;
+                                return;
+                            }
+                        } catch (e) {
+                            console.error('Error opening tab:', e);
+                            errorMessage.style.display = 'block';
+                            errorMessage.textContent = 'Error: ' + e.message;
+                            openTabsButton.textContent = 'Start Increasing Views';
+                            openTabsButton.disabled = false;
+                            return;
+                        }
+                        
+                        // Schedule next tab opening with the specified delay
+                        setTimeout(openTabWithDelay, speed);
+                    } else {
+                        // Process completed
+                        successMessage.textContent = 'Process completed! ' + viewsAttempted + ' views attempted.';
+                        openTabsButton.textContent = 'Start Increasing Views';
+                        openTabsButton.disabled = false;
+                    }
+                }
+                
+                // Start opening tabs
+                openTabWithDelay();
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
